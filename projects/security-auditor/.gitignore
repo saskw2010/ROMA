@@ -1,0 +1,6 @@
+.tmp_audits/
+.pytest_cache/
+.ruff_cache/
+reports/*.json
+reports/*.md
+reports/*.log
