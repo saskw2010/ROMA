@@ -14,7 +14,6 @@ from src.agents import SecurityAuditorAgent
 from src.config import config
 
 
-@pytest.mark.integration
 def test_real_public_repository_audit(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(config, "temp_dir", tmp_path / "temp")
     monkeypatch.setattr(config, "reports_dir", tmp_path / "reports")

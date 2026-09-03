@@ -4,7 +4,6 @@ import asyncio
 
 from src.audit import run_audit
 
-
 REPOSITORIES = [
     ("https://github.com/pallets/flask", "main"),
     ("https://github.com/pallets/click", "main"),

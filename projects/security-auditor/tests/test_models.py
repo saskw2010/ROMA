@@ -1,11 +1,18 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 import pytest
 from pydantic import ValidationError
 
-from src.models import AuditReport, AuditSummary, Finding, FindingType, RepositoryInfo, SeverityLevel
+from src.models import (
+    AuditReport,
+    AuditSummary,
+    Finding,
+    FindingType,
+    RepositoryInfo,
+    SeverityLevel,
+)
 
 
 def test_audit_report_model_validation() -> None:
@@ -17,7 +24,7 @@ def test_audit_report_model_validation() -> None:
             owner="example",
             branch="main",
             commit_sha="abc123",
-            clone_timestamp=datetime.now(timezone.utc),
+            clone_timestamp=datetime.now(UTC),
         ),
         summary=AuditSummary(files_scanned=10, total_findings=1, high=1, risk_score=1.5),
         findings=[

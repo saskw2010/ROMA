@@ -4,10 +4,11 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import os
 import shutil
 import subprocess
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -22,9 +23,11 @@ from .models import (
     SeverityLevel,
 )
 
-import logging
-
 logger = logging.getLogger(__name__)
+
+
+async def _run_subprocess(*args: Any, **kwargs: Any) -> subprocess.CompletedProcess[str]:
+    return await asyncio.to_thread(subprocess.run, *args, **kwargs)
 
 
 class RepositoryScannerAgent:
@@ -43,7 +46,7 @@ class RepositoryScannerAgent:
             if clone_path.exists():
                 shutil.rmtree(clone_path)
 
-            result = subprocess.run(
+            result = await _run_subprocess(
                 [
                     "git",
                     "clone",
@@ -61,7 +64,7 @@ class RepositoryScannerAgent:
             )
             logger.debug("git clone stdout: %s", result.stdout.strip())
 
-            commit_result = subprocess.run(
+            commit_result = await _run_subprocess(
                 ["git", "rev-parse", "HEAD"],
                 cwd=clone_path,
                 capture_output=True,
@@ -93,9 +96,9 @@ class RepositoryScannerAgent:
                 "branch": branch,
                 "files_count": len(files),
                 "files": files[:100],
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
             }
-        except Exception as exc:
+        except (OSError, shutil.Error, subprocess.SubprocessError) as exc:
             logger.error("Repository scan failed: %s", exc)
             return {"status": "error", "error": str(exc), "repo_url": repo_url, "branch": branch}
 
@@ -117,20 +120,21 @@ class StaticAnalysisAgent:
                 "status": "success",
                 "findings": findings,
                 "total_findings": len(findings),
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
             }
-        except Exception as exc:
+        except (OSError, subprocess.SubprocessError) as exc:
             logger.error("Static analysis failed: %s", exc)
             return {"status": "error", "error": str(exc), "findings": []}
 
     async def _run_bandit(self, repo_path: str, timeout: int | None = None) -> list[dict[str, Any]]:
         findings: list[dict[str, Any]] = []
         try:
-            result = subprocess.run(
+            result = await _run_subprocess(
                 ["bandit", "-r", repo_path, "-f", "json", "-ll"],
                 capture_output=True,
                 text=True,
                 timeout=timeout or config.analysis_timeout,
+                check=False,
             )
             if result.stdout:
                 bandit_results = json.loads(result.stdout)
@@ -148,18 +152,19 @@ class StaticAnalysisAgent:
                     )
         except FileNotFoundError:
             logger.warning("Bandit is not installed; skipping bandit scan")
-        except Exception as exc:
+        except (OSError, subprocess.SubprocessError, json.JSONDecodeError) as exc:
             logger.warning("Bandit analysis failed: %s", exc)
         return findings
 
     async def _run_semgrep(self, repo_path: str, timeout: int | None = None) -> list[dict[str, Any]]:
         findings: list[dict[str, Any]] = []
         try:
-            result = subprocess.run(
+            result = await _run_subprocess(
                 ["semgrep", "--json", "-c", "p/security-audit", repo_path],
                 capture_output=True,
                 text=True,
                 timeout=timeout or config.analysis_timeout,
+                check=False,
             )
             if result.stdout:
                 semgrep_results = json.loads(result.stdout)
@@ -176,7 +181,7 @@ class StaticAnalysisAgent:
                     )
         except FileNotFoundError:
             logger.warning("Semgrep is not installed; skipping semgrep scan")
-        except Exception as exc:
+        except (OSError, subprocess.SubprocessError, json.JSONDecodeError) as exc:
             logger.warning("Semgrep analysis failed: %s", exc)
         return findings
 
@@ -195,9 +200,9 @@ class DependencyCheckerAgent:
                 "status": "success",
                 "vulnerabilities": vulnerabilities,
                 "total_vulnerabilities": len(vulnerabilities),
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
             }
-        except Exception as exc:
+        except (OSError, subprocess.SubprocessError) as exc:
             logger.error("Dependency check failed: %s", exc)
             return {"status": "error", "error": str(exc), "vulnerabilities": []}
 
@@ -208,11 +213,12 @@ class DependencyCheckerAgent:
             return vulnerabilities
 
         try:
-            result = subprocess.run(
+            result = await _run_subprocess(
                 ["pip-audit", "-r", str(req_file), "-f", "json"],
                 capture_output=True,
                 text=True,
                 timeout=timeout or config.dependency_timeout,
+                check=False,
             )
             if not result.stdout:
                 return vulnerabilities
@@ -245,7 +251,7 @@ class DependencyCheckerAgent:
                     )
         except FileNotFoundError:
             logger.warning("pip-audit is not installed; skipping dependency audit")
-        except Exception as exc:
+        except (OSError, subprocess.SubprocessError, json.JSONDecodeError) as exc:
             logger.warning("Dependency audit failed: %s", exc)
         return vulnerabilities
 
@@ -271,7 +277,7 @@ class ReportGeneratorAgent:
             ]
             summary = self._calculate_summary(findings, dependency_vulnerabilities, scan_result.get("files_count", 0))
             report = AuditReport(
-                audit_id=f"audit_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}",
+                audit_id=f"audit_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S')}",
                 repository=repo_info,
                 summary=summary,
                 findings=findings,
@@ -292,9 +298,9 @@ class ReportGeneratorAgent:
                 "status": "success",
                 "report": report.model_dump(mode="json"),
                 "report_id": report.audit_id,
-                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
             }
-        except Exception as exc:
+        except (KeyError, TypeError, ValueError) as exc:
             logger.error("Report generation failed: %s", exc)
             return {"status": "error", "error": str(exc)}
 

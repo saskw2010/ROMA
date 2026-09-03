@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from enum import Enum
 from typing import Any
 
@@ -80,7 +80,7 @@ class RepositoryInfo(BaseModel):
     is_private: bool = False
     branch: str = "main"
     commit_sha: str | None = None
-    clone_timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    clone_timestamp: datetime = Field(default_factory=lambda: datetime.now(UTC))
 
 
 class AuditReport(BaseModel):
@@ -92,4 +92,4 @@ class AuditReport(BaseModel):
     recommendations: list[str] = Field(default_factory=list)
     agent_statuses: dict[str, str] = Field(default_factory=dict)
     metadata: dict[str, Any] = Field(default_factory=dict)
-    generated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    generated_at: datetime = Field(default_factory=lambda: datetime.now(UTC))

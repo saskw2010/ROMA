@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 import os
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Mapping
 
 from pydantic import BaseModel, Field
 
@@ -31,7 +31,7 @@ class SecurityAuditorConfig(BaseModel):
     default_timeout: int = 300
     parallel_execution: bool = True
 
-    def model_post_init(self, __context: object) -> None:
+    def model_post_init(self, __context: object, /) -> None:
         self.temp_dir = self.temp_dir or self.project_root / ".tmp"
         self.reports_dir = self.reports_dir or self.project_root / "reports"
         self.log_dir = self.log_dir or self.project_root / "logs"
@@ -45,7 +45,7 @@ class SecurityAuditorConfig(BaseModel):
         return self.log_dir / "audit.log"
 
     @classmethod
-    def load(cls, env: Mapping[str, str] | None = None) -> "SecurityAuditorConfig":
+    def load(cls, env: Mapping[str, str] | None = None) -> SecurityAuditorConfig:
         environ = dict(os.environ if env is None else env)
         project_root = Path(environ.get("SECURITY_AUDITOR_PROJECT_ROOT", Path(__file__).resolve().parents[1]))
         return cls(

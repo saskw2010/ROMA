@@ -6,8 +6,8 @@ import argparse
 import asyncio
 import json
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 from .agents import ReportGeneratorAgent, SecurityAuditorAgent
 from .config import config
@@ -98,7 +98,7 @@ async def run_audit(
     parallel_execution: bool | None = None,
     log_file: str | None = None,
 ) -> tuple[AuditReport, list[Path]]:
-    resolved_log_level = "DEBUG" if debug else (log_level or ("INFO" if verbose else "INFO"))
+    resolved_log_level = "DEBUG" if debug else (log_level or "INFO")
     logger = configure_logging(verbose=verbose or debug, log_level=resolved_log_level, log_file=log_file)
     logger.info("Running security audit", extra={"event": "audit_started", "repo": repo_url})
 
@@ -144,7 +144,7 @@ def cli(argv: Sequence[str] | None = None) -> int:
     except KeyboardInterrupt:
         print("Audit interrupted by user.", file=sys.stderr)
         return 130
-    except Exception as exc:
+    except (TimeoutError, RuntimeError, ValueError, OSError) as exc:
         print(f"Audit failed: {exc}", file=sys.stderr)
         return 1
 
