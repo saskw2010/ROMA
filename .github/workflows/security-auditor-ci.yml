@@ -10,6 +10,9 @@ on:
       - 'projects/security-auditor/**'
       - '.github/workflows/security-auditor-ci.yml'
 
+permissions:
+  contents: read
+
 jobs:
   test:
     runs-on: ubuntu-latest
