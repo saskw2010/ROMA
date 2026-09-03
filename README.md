@@ -8,17 +8,19 @@
   <strong>Building hierarchical high-performance multi-agent systems made easy! (Beta) </strong>
 </p>
 
-<a href="https://trendshift.io/repositories/14848" target="_blank"><img src="https://trendshift.io/api/badge/repositories/14848" alt="sentient-agi%2FROMA | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+> 🔗 **Enhanced Fork Notice:** This is an actively maintained enhanced fork of [sentient-agi/ROMA](https://github.com/sentient-agi/ROMA) with production-ready features, security hardening, and comprehensive documentation. See [FORK_STRATEGY.md](./FORK_STRATEGY.md) for details.
+
+<a href="https://trendshift.io/repositories/14848" target="_blank"><img src="https://trendshift.io/api/badge/repositories/14848" alt="sentient-agi%2FROMA | Trendshift" style="width: 250px; height:[...]
 
 <p align="center">
   <a href="https://sentient.xyz/" target="_blank" style="margin: 2px;">
-    <img alt="Homepage" src="https://img.shields.io/badge/Sentient-Homepage-%23EAEAEA?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzNDEuMzMzIiBoZWlnaHQ9IjM0MS4zMzMiIHZlcnNpb249IjEuMCIgdmlld0JveD0iMCAwIDI1NiAyNTYiPjxwYXRoIGQ9Ik0xMzIuNSAyOC40Yy0xLjUgMi4yLTEuMiAzLjkgNC45IDI3LjIgMy41IDEzLjcgOC41IDMzIDExLjEgNDIuOSAyLjYgOS45IDUuMyAxOC42IDYgMTkuNCAzLjIgMy4zIDExLjctLjggMTMuMS02LjQuNS0xLjktMTcuMS03Mi0xOS43LTc4LjYtMS4yLTMtNy41LTYuOS0xMS4zLTYuOS0xLjYgMC0zLjEuOS00LjEgMi40ek0xMTAgMzBjLTEuMSAxLjEtMiAzLjEtMiA0LjVzLjkgMy40IDIgNC41IDMuMSAyIDQuNSAyIDMuNC0uOSA0LjUtMiAyLTMuMSAyLTQuNS0uOS0zLjQtMi00LjUtMy4xLTItNC41LTItMy40LjktNC41IDJ6TTgxLjUgNDYuMWMtMi4yIDEuMi00LjYgMi44LTUuMiAzLjctMS44IDIuMy0xLjYgNS42LjUgNy40IDEuMyAxLjIgMzIuMSAxMC4yIDQ1LjQgMTMuMyAzIC44IDYuOC0yLjIgNi44LTUuMyAwLTMuNi0yLjItOS4yLTMuOS0xMC4xQzEyMy41IDU0LjIgODcuMiA0NCA4NiA0NGMtLjMuMS0yLjMgMS00LjUgMi4xek0xNjUgNDZjLTEuMSAxLjEtMiAyLjUtMiAzLjIgMCAyLjggMTEuMyA0NC41IDEyLjYgNDYuNS45IDEuNSAyLjQgMi4zIDQuMiAyLjMgMy44IDAgOS4yLTUuNiA5LjItOS40IDAtMS41LTIuMS0xMC45LTQuNy0yMC44bC00LjctMTguMS00LjUtMi44Yy01LjMtMy40LTcuNC0zLjYtMTAuMS0uOXpNNDguNyA2NS4xYy03LjcgNC4xLTYuOSAxMC43IDEuNSAxMyAyLjQuNiAyMS40IDUuOCA0Mi4yIDExLjYgMjIuOCA2LjIgMzguOSAxMC4yIDQwLjMgOS44IDMuNS0uOCA0LjYtMy44IDMuMi04LjgtMS41LTUuNy0yLjMtNi41LTguMy04LjJDOTQuMiA3My4xIDU2LjYgNjMgNTQuOCA2M2MtMS4zLjEtNCAxLTYuMSAyLjF6TTE5OC4yIDY0LjdjLTMuMSAyLjgtMy41IDUuNi0xLjEgOC42IDQgNS4xIDEwLjkgMi41IDEwLjktNC4xIDAtNS4zLTUuOC03LjktOS44LTQuNXpNMTgxLjggMTEzLjFjLTI3IDI2LjQtMzEuOCAzMS41LTMxLjggMzMuOSAwIDEuNi43IDMuNSAxLjUgNC40IDEuNyAxLjcgNy4xIDMgMTAuMiAyLjQgMi4xLS4zIDU2LjktNTMuNCA1OS01Ny4xIDEuNy0zLjEgMS42LTkuOC0uMy0xMi41LTMuNi01LjEtNC45LTQuMi0zOC42IDI4Ljl6TTM2LjYgODguMWMtNSA0LTIuNCAxMC45IDQuMiAxMC45IDMuMyAwIDYuMi0yLjkgNi4yLTYuMyAwLTIuMS00LjMtNi43LTYuMy02LjctLjggMC0yLjYuOS00LjEgMi4xek02My40IDk0LjVjLTEuNi43LTguOSA3LjMtMTYuMSAxNC43TDM0IDEyMi43djUuNmMwIDYuMyAxLjYgOC43IDUuOSA4LjcgMi4xIDAgNi0zLjQgMTkuOS0xNy4zIDkuNS05LjUgMTcuMi0xOCAxNy4yLTE4LjkgMC00LjctOC40LTguNi0xMy42LTYuM3pNNjIuOSAxMzAuNiAzNCAxNTkuNXY1LjZjMCA2LjIgMS44IDguOSA2IDguOSAzLjIgMCA2Ni02Mi40IDY2LTY1LjYgMC0zLjMtMy41LTUuNi05LjEtNi4ybC01LS41LTI5IDI4Ljl6TTE5Ni4zIDEzNS4yYy05IDktMTYuNiAxNy4zLTE2LjkgMTguNS0xLjMgNS4xIDIuNiA4LjMgMTAgOC4zIDIuOCAwIDUuMi0yIDE3LjktMTQuOCAxNC41LTE0LjcgMTQuNy0xNC45IDE0LjctMTkuMyAwLTUuOC0yLjItOC45LTYuMi04LjktMi42IDAtNS40IDIuMy0xOS41IDE2LjJ6TTk2IDEzNi44Yy0yLjkuOS04IDYuNi04IDkgMCAxLjMgMi45IDEzLjQgNi40IDI3IDMuNiAxMy42IDcuOSAzMC4zIDkuNyAzNy4yIDEuNyA2LjkgMy42IDEzLjMgNC4xIDE0LjIuNSAxIDIuNiAyLjcgNC44IDMuOCA2LjggMy41IDExIDIuMyAxMS0zLjIgMC0zLTIwLjYtODMuMS0yMi4xLTg1LjktLjktMS45LTMuNi0yLjgtNS45LTIuMXpNMTIwLjUgMTU4LjRjLTEuOSAyLjktMS4yIDguNSAxLjQgMTEuNiAxLjEgMS40IDEyLjEgNC45IDM5LjYgMTIuNSAyMC45IDUuOCAzOC44IDEwLjUgMzkuOCAxMC41czMuNi0xIDUuNy0yLjJjOC4xLTQuNyA3LjEtMTAuNi0yLjMtMTMuMi0yOC4yLTguMS03OC41LTIxLjYtODAuMy0yMS42LTEuNCAwLTMgMS0zLjkgMi40ek0yMTAuNyAxNTguOGMtMS44IDEuOS0yLjIgNS45LS45IDcuOCAxLjUgMi4zIDUgMy40IDcuNiAyLjQgNi40LTIuNCA1LjMtMTEuMi0xLjUtMTEuOC0yLjQtLjItNCAuMy01LjIgMS42ek02OS42IDE2MmMtMiAyLjItMy42IDQuMy0zLjYgNC44LjEgMi42IDEwLjEgMzguNiAxMS4xIDM5LjkgMi4yIDIuNiA5IDUuNSAxMS41IDQuOSA1LTEuMyA0LjktMy0xLjUtMjcuNy0zLjMtMTIuNy02LjUtMjMuNy03LjItMjQuNS0yLjItMi43LTYuNC0xLjctMTAuMyAyLjZ6TTQ5LjYgMTgxLjVjLTIuNCAyLjUtMi45IDUuNC0xLjIgOEM1MiAxOTUgNjAgMTkzIDYwIDE4Ni42YzAtMS45LS44LTQtMS44LTQuOS0yLjMtMi4xLTYuNi0yLjItOC42LS4yek0xMjguNSAxODdjLTIuMyAyLjUtMS4zIDEwLjMgMS42IDEyLjggMi4yIDEuOSAzNC44IDExLjIgMzkuNCAxMS4yIDMuNiAwIDEwLjEtNC4xIDExLTcgLjYtMS45LTEuNy03LTMuMS03LS4yIDAtMTAuMy0yLjctMjIuMy02cy0yMi41LTYtMjMuMy02Yy0uOCAwLTIuMy45LTMuMyAyek0xMzYuNyAyMTYuOGMtMy40IDMuOC0xLjUgOS41IDMuNSAxMC43IDMuOSAxIDguMy0zLjQgNy4zLTcuMy0xLjItNS4xLTcuNS03LjEtMTAuOC0zLjR6Ii8%2BPC9zdmc%2B&link=https%3A%2F%2Fhuggingface.co%2FSentientagi" style="display: inline-block; vertical-align: middle;"/>
+    <img alt="Homepage" src="https://img.shields.io/badge/Sentient-Homepage-%23EAEAEA?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzNDEuM[...]
   </a>
   <a href="https://github.com/sentient-agi" target="_blank" style="margin: 2px;">
     <img alt="GitHub" src="https://img.shields.io/badge/Github-sentient_agi-181717?logo=github" style="display: inline-block; vertical-align: middle;"/>
   </a>
   <a href="https://huggingface.co/Sentientagi" target="_blank" style="margin: 2px;">
-    <img alt="Hugging Face" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-SentientAGI-ffc107?color=ffc107&logoColor=white" style="display: inline-block; vertical-align: middle;"/>
+    <img alt="Hugging Face" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-SentientAGI-ffc107?color=ffc107&logoColor=white" style="display: inline-block; vertical-align: middle;"/[...]
   </a>
 </div>
 
@@ -33,7 +35,9 @@
 <p align="center">
   <a href="https://www.sentient.xyz/blog/recursive-open-meta-agent">Technical Blog</a> •
   <a href="docs/">Paper (Coming soon)</a> •
-  <a href="https://www.sentient.xyz/">Build Agents for $$$</a>
+  <a href="https://www.sentient.xyz/">Build Agents for $$$</a> •
+  <a href="./FORK_STRATEGY.md">Fork Strategy</a> •
+  <a href="./CONTRIBUTING.md">Contributing</a>
 </p>
 
 
@@ -43,6 +47,43 @@
 ---
 </div>
 
+## 🚀 What's in This Fork?
+
+This enhanced fork adds **production-ready features** while maintaining full compatibility with [upstream ROMA](https://github.com/sentient-agi/ROMA):
+
+| Feature | Status | Details |
+|---------|--------|---------|
+| **SWE-bench Integration** | ✅ Merged | Model-specific profiles (Sonnet, Codex, Gemini) |
+| **MLflow Tracking** | ✅ Merged | Experiment tracking & S3 artifacts |
+| **Security Hardening** | ✅ Enhanced | SECURITY.md policy + vulnerability reporting |
+| **Production Docs** | ✅ Enhanced | Deployment guides, best practices, troubleshooting |
+| **LiteLLM 1.84.0+** | ✅ Updated | Latest compatibility updates |
+| **Circuit Breaker** | ✅ Merged | Error handling & automatic retry |
+| **Enterprise Ready** | ✅ In Progress | IAM, observability, compliance |
+
+### 🤝 Fork vs Upstream
+
+```
+upstream (sentient-agi/ROMA)
+└─ Research & Development Focus
+   └─ Cutting-edge features
+   └─ Academic papers
+   └─ Community-driven
+
+This Fork (saskw2010/ROMA)
+└─ Production & Enterprise Focus
+   └─ Stable, tested features
+   └─ Comprehensive documentation
+   └─ Contributions back to upstream
+```
+
+**Quick Links:**
+- 🔗 **Upstream:** https://github.com/sentient-agi/ROMA
+- 📍 **This Fork:** https://github.com/saskw2010/ROMA
+- 📋 **Strategy:** [FORK_STRATEGY.md](./FORK_STRATEGY.md)
+- 📝 **Changelog:** [FORK_CHANGELOG.md](./FORK_CHANGELOG.md)
+
+---
 
 ## 📖 Documentation
 
@@ -57,6 +98,10 @@
 
 - **[🗺️ Roadmap](docs/ROADMAP.md)** - See what's coming next for ROMA
 
+- **[🤝 Contributing](CONTRIBUTING.md)** - How to contribute to this fork and upstream
+
+- **[📋 Fork Strategy](FORK_STRATEGY.md)** - Long-term vision and maintenance plan
+
 ## 🎯 What is ROMA?
 
 <div align="center">
@@ -64,7 +109,7 @@
 </div>
 <br>
 
-**ROMA** is a **meta-agent framework** that uses recursive hierarchical structures to solve complex problems. By breaking down tasks into parallelizable components, ROMA enables agents to tackle sophisticated reasoning challenges while maintaining transparency that makes context-engineering and iteration straightforward. The framework offers **parallel problem solving** where agents work simultaneously on different parts of complex tasks, **transparent development** with a clear structure for easy debugging, and **proven performance** demonstrated through our search agent's strong benchmark results. We've shown the framework's effectiveness, but this is just the beginning. As an **open-source and extensible** platform, ROMA is designed for community-driven development, allowing you to build and customize agents for your specific needs while benefiting from the collective improvements of the community.
+**ROMA** is a **meta-agent framework** that uses recursive hierarchical structures to solve complex problems. By breaking down tasks into parallelizable components, ROMA enables agents to tackle sophisticated challenges that would be difficult for single-pass systems.
 
 ## 🏗️ How It Works
 
@@ -133,10 +178,18 @@ flowchart TB
 ### 🚀 30-Second Quick Start
 
 ```bash
-git clone https://github.com/sentient-agi/ROMA.git
+# Clone this enhanced fork
+git clone https://github.com/saskw2010/ROMA.git
 cd ROMA
 
 # Run the automated setup
+./setup.sh
+```
+
+**Or use the original upstream repo:**
+```bash
+git clone https://github.com/sentient-agi/ROMA.git
+cd ROMA
 ./setup.sh
 ```
 
@@ -208,7 +261,7 @@ For secure code execution capabilities, optionally set up E2B sandboxes:
 
 ## 🤖 Pre-built Agents
 
-> **Note:** These agents are demonstrations built using ROMA's framework through simple vibe-prompting and minimal manual tuning. They showcase how easily you can create high-performance agents with ROMA, rather than being production-final solutions. Our mission is to empower the community to build, share, and get rewarded for creating innovative agent recipes and use-cases.
+> **Note:** These agents are demonstrations built using ROMA's framework through simple vibe-prompting and minimal manual tuning. They showcase how easily you can create high-performance agents with ROMA.
 
 ROMA comes with example agents that demonstrate the framework's capabilities:
 
@@ -240,7 +293,7 @@ Specialized financial analysis agent with deep blockchain and DeFi expertise:
 
 Perfect for: Token research, portfolio analysis, DeFi protocol evaluation, market trend analysis
 
-All three agents demonstrate ROMA's recursive architecture in action, showing how complex queries that would overwhelm single-pass systems can be elegantly decomposed and solved. They serve as templates and inspiration for building your own specialized agents.
+All three agents demonstrate ROMA's recursive architecture in action, showing how complex queries that would overwhelm single-pass systems can be elegantly decomposed and solved. They serve as templates for building your own specialized agents.
 
 ### Your First Agent in 5 Minutes
 
@@ -248,7 +301,7 @@ All three agents demonstrate ROMA's recursive architecture in action, showing ho
 ./setup.sh  # Automated setup with Docker or native installation
 ```
 
-Access all the pre-defined agents through the frontend on `localhost:3000` after setting up the backend on `localhost:5000`. Please checkout [Setup](./docs/SETUP.md) and the [Agents guide](./docs/AGENTS_GUIDE.md) to get started!
+Access all the pre-defined agents through the frontend on `localhost:3000` after setting up the backend on `localhost:5000`. Please checkout [Setup](./docs/SETUP.md) and the [Agents guide](./docs/AGENTS_GUIDE.md) for more information.
 
 <div align="center">
     <img src="./assets/agent_customization.png" alt="alt text" width="60%"/>
@@ -333,6 +386,16 @@ Seamlessly integrate external tools and protocols with configurable intervention
 
 
 
+---
+
+## 🔗 Fork Resources
+
+- 📋 **[Fork Strategy](./FORK_STRATEGY.md)** - Long-term maintenance plan and roadmap
+- 📝 **[Fork Changelog](./FORK_CHANGELOG.md)** - Version history and feature tracking
+- 🤝 **[Contributing Guide](./CONTRIBUTING.md)** - How to contribute
+- 🔒 **[Security Policy](./.github/SECURITY.md)** - Vulnerability reporting
+
+---
 
 ## 🙏 Acknowledgments
 
@@ -341,6 +404,8 @@ This framework would not have been possible if it wasn't for these amazing open-
 - [Pydantic](https://github.com/pydantic/pydantic) - Data validation using Python type annotations
 - [Agno]([https://github.com/agno-ai/agno](https://github.com/agno-agi/agno)) - Framework for building AI agents
 - [E2B](https://github.com/e2b-dev/e2b) - Cloud runtime for AI agents
+
+**Original Project:** [sentient-agi/ROMA](https://github.com/sentient-agi/ROMA) - Thank you for the incredible foundation!
 
 ## 📚 Citation
 
@@ -374,7 +439,7 @@ If you use the ROMA repo in your research, please cite:
 
 <div align="center">
 
-[![Star History Chart](https://api.star-history.com/svg?repos=sentient-agi/roma&type=Date)](https://www.star-history.com/#sentient-agi/roma&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=sentient-agi/roma,saskw2010/roma&type=Date)](https://www.star-history.com/#sentient-agi/roma&saskw2010/roma&Date)
 
 </div>
 
@@ -382,3 +447,8 @@ If you use the ROMA repo in your research, please cite:
 
 This project is licensed under the Apache 2.0 License - see the [LICENSE](LICENSE) file for details.
 
+---
+
+**Fork Maintained by:** [@saskw2010](https://github.com/saskw2010)  
+**Upstream:** [@sentient-agi](https://github.com/sentient-agi)  
+**Last Updated:** September 3, 2026
