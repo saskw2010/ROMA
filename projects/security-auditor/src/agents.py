@@ -24,6 +24,9 @@ try:
     from .config import config
     from .logging import get_logger
 except ImportError:
+    import importlib.util
+    import sys
+
     from models import (
         AuditReport,
         RepositoryInfo,
@@ -34,7 +37,14 @@ except ImportError:
         DependencyVulnerability,
     )
     from config import config
-    from logging import get_logger
+    logging_path = Path(__file__).with_name("logging.py")
+    spec = importlib.util.spec_from_file_location("security_auditor_logging", logging_path)
+    if spec is None or spec.loader is None:
+        raise ImportError("Unable to load security auditor logging module")
+    logging_module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = logging_module
+    spec.loader.exec_module(logging_module)
+    get_logger = logging_module.get_logger
 
 logger = get_logger(__name__)
 

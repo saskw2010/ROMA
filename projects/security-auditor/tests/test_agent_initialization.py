@@ -1,4 +1,4 @@
-from agents import (
+from src.agents import (
     DependencyCheckerAgent,
     ReportGeneratorAgent,
     RepositoryScannerAgent,

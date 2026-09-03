@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from agents import SecurityAuditorAgent
+from src.agents import SecurityAuditorAgent
 
 
 @pytest.mark.integration

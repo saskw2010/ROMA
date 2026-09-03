@@ -3,18 +3,37 @@ CLI entry point for Security Auditor.
 """
 
 import argparse
-import asyncio
 import json
+import sys
 from pathlib import Path
 from typing import Sequence
 from urllib.parse import urlparse
 
+if __package__ in {None, ""}:
+    script_dir = Path(__file__).resolve().parent
+    if str(script_dir) in sys.path:
+        sys.path.remove(str(script_dir))
+    project_root = script_dir.parent
+    if str(project_root) not in sys.path:
+        sys.path.insert(0, str(project_root))
+
+import asyncio
+
 try:
-    from .agents import SecurityAuditorAgent
-    from .logging import configure_logging
+    from src.agents import SecurityAuditorAgent
+    from src.logging import configure_logging
 except ImportError:
+    import importlib.util
+
     from agents import SecurityAuditorAgent
-    from logging import configure_logging
+    logging_path = Path(__file__).with_name("logging.py")
+    spec = importlib.util.spec_from_file_location("security_auditor_logging", logging_path)
+    if spec is None or spec.loader is None:
+        raise ImportError("Unable to load security auditor logging module")
+    logging_module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = logging_module
+    spec.loader.exec_module(logging_module)
+    configure_logging = logging_module.configure_logging
 
 
 def _build_parser() -> argparse.ArgumentParser:

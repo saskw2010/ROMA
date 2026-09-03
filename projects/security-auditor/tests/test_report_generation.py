@@ -1,6 +1,6 @@
 import pytest
 
-from agents import ReportGeneratorAgent
+from src.agents import ReportGeneratorAgent
 
 
 @pytest.mark.asyncio

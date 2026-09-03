@@ -11,6 +11,12 @@ from typing import Any, Dict, Optional
 
 _LEVEL_ORDER = {"DEBUG": 10, "INFO": 20, "WARNING": 30, "ERROR": 40}
 _GLOBAL_LEVEL = "INFO"
+DEBUG = 10
+INFO = 20
+WARNING = 30
+ERROR = 40
+CRITICAL = 50
+NOTSET = 0
 
 
 def configure_logging(level: str = "INFO") -> None:
@@ -52,6 +58,28 @@ class StructuredLogger:
     def error(self, message: str, **extra: Any) -> None:
         self._emit("ERROR", message, extra=extra or None)
 
+    def exception(self, message: str, **extra: Any) -> None:
+        self._emit("ERROR", message, extra=extra or None)
+
+    def setLevel(self, level: Any) -> None:
+        if isinstance(level, int):
+            reverse_map = {10: "DEBUG", 20: "INFO", 30: "WARNING", 40: "ERROR", 50: "ERROR"}
+            self.level = reverse_map.get(level, "INFO")
+        else:
+            self.level = str(level).upper()
+
+    def isEnabledFor(self, level: int) -> bool:
+        current_level = _LEVEL_ORDER.get((self.level or _GLOBAL_LEVEL).upper(), 20)
+        return level >= current_level
+
 
 def get_logger(name: str) -> StructuredLogger:
     return StructuredLogger(name=name)
+
+
+def getLogger(name: str | None = None) -> StructuredLogger:
+    return StructuredLogger(name=name or "root")
+
+
+def basicConfig(level: Any = "INFO", **_: Any) -> None:
+    configure_logging(str(level))

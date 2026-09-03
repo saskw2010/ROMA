@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from models import (
+from src.models import (
     AuditReport,
     AuditSummary,
     Finding,
