@@ -12,7 +12,11 @@ old_projects/
 # Runtime directory (contains all runtime files)
 runtime/
 experiments/
+!projects/ml-training/experiments/
+!projects/ml-training/experiments/**
 notebooks/
+!projects/ml-training/notebooks/
+!projects/ml-training/notebooks/*.ipynb
 
 # Agent runtime data and cache (legacy - to be migrated)
 .agent_cache/
@@ -40,6 +44,8 @@ experiment_archives/
 CLAUDE.md
 data_quality_analysis.md
 *.txt
+!projects/ml-training/requirements.txt
+!projects/ml-training/requirements-dev.txt
 
 # Runtime logs and output
 *.log

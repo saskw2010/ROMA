@@ -22,6 +22,7 @@
 | 🔒 **Security Policy** | [.github/SECURITY.md](.github/SECURITY.md) |
 | 📊 **Projects & Roadmap** | [PROJECTS.md](./PROJECTS.md) |
 | 🔐 **Security Auditor Project** | [projects/security-auditor/README.md](./projects/security-auditor/README.md) |
+| 🤖 **ML Training Project** | [projects/ml-training/README.md](./projects/ml-training/README.md) |
 
 ---
 
@@ -34,6 +35,14 @@
 **Timeline:** 4 weeks  
 
 👉 **[View Project Roadmap →](./projects/security-auditor/README.md)**
+
+### 🤖 ML Training & Recommendation Engine
+**Status:** 🚀 In Development  
+**Branch:** `project/ml-training`  
+**Goal:** Train recommendation and risk models for Security Auditor workflows  
+**Timeline:** 4 weeks  
+
+👉 **[View Project Roadmap →](./projects/ml-training/README.md)**
 
 ---
 
