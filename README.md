@@ -10,80 +10,34 @@
 
 > 🔗 **Enhanced Fork Notice:** This is an actively maintained enhanced fork of [sentient-agi/ROMA](https://github.com/sentient-agi/ROMA) with production-ready features, security hardening, and comprehensive documentation. See [FORK_STRATEGY.md](./FORK_STRATEGY.md) for details.
 
-<a href="https://trendshift.io/repositories/14848" target="_blank"><img src="https://trendshift.io/api/badge/repositories/14848" alt="sentient-agi%2FROMA | Trendshift" style="width: 250px; height:[...]
+---
 
-<p align="center">
-  <a href="https://sentient.xyz/" target="_blank" style="margin: 2px;">
-    <img alt="Homepage" src="https://img.shields.io/badge/Sentient-Homepage-%23EAEAEA?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzNDEuM[...]
-  </a>
-  <a href="https://github.com/sentient-agi" target="_blank" style="margin: 2px;">
-    <img alt="GitHub" src="https://img.shields.io/badge/Github-sentient_agi-181717?logo=github" style="display: inline-block; vertical-align: middle;"/>
-  </a>
-  <a href="https://huggingface.co/Sentientagi" target="_blank" style="margin: 2px;">
-    <img alt="Hugging Face" src="https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-SentientAGI-ffc107?color=ffc107&logoColor=white" style="display: inline-block; vertical-align: middle;"/[...]
-  </a>
-</div>
+## 🚀 **Quick Links**
 
-<div align="center" style="line-height: 1;">
-  <a href="https://discord.gg/sentientfoundation" target="_blank" style="margin: 2px;">
-    <img alt="Discord" src="https://img.shields.io/badge/Discord-SentientAGI-7289da?logo=discord&logoColor=white&color=7289da" style="display: inline-block; vertical-align: middle;"/>
-  </a>
-  <a href="https://x.com/SentientAGI" target="_blank" style="margin: 2px;">
-    <img alt="Twitter Follow" src="https://img.shields.io/badge/-SentientAGI-grey?logo=x&link=https%3A%2F%2Fx.com%2FSentientAGI%2F" style="display: inline-block; vertical-align: middle;"/>
-  </a>
-</p>
-<p align="center">
-  <a href="https://www.sentient.xyz/blog/recursive-open-meta-agent">Technical Blog</a> •
-  <a href="docs/">Paper (Coming soon)</a> •
-  <a href="https://www.sentient.xyz/">Build Agents for $$$</a> •
-  <a href="./FORK_STRATEGY.md">Fork Strategy</a> •
-  <a href="./CONTRIBUTING.md">Contributing</a>
-</p>
-
-
-
-</div>
+| Resource | Link |
+|----------|------|
+| 📋 **Fork Strategy** | [FORK_STRATEGY.md](./FORK_STRATEGY.md) |
+| 📝 **Fork Changelog** | [FORK_CHANGELOG.md](./FORK_CHANGELOG.md) |
+| 🤝 **Contributing** | [CONTRIBUTING.md](./CONTRIBUTING.md) |
+| 🔒 **Security Policy** | [.github/SECURITY.md](.github/SECURITY.md) |
+| 📊 **Projects & Roadmap** | [PROJECTS.md](./PROJECTS.md) |
+| 🔐 **Security Auditor Project** | [projects/security-auditor/README.md](./projects/security-auditor/README.md) |
 
 ---
-</div>
 
-## 🚀 What's in This Fork?
+## 🎯 **Active Projects**
 
-This enhanced fork adds **production-ready features** while maintaining full compatibility with [upstream ROMA](https://github.com/sentient-agi/ROMA):
+### 🔒 Security Auditor Agent 
+**Status:** 🚀 In Development  
+**Branch:** `project/security-auditor`  
+**Goal:** Multi-agent system for enterprise security audits  
+**Timeline:** 4 weeks  
 
-| Feature | Status | Details |
-|---------|--------|---------|
-| **SWE-bench Integration** | ✅ Merged | Model-specific profiles (Sonnet, Codex, Gemini) |
-| **MLflow Tracking** | ✅ Merged | Experiment tracking & S3 artifacts |
-| **Security Hardening** | ✅ Enhanced | SECURITY.md policy + vulnerability reporting |
-| **Production Docs** | ✅ Enhanced | Deployment guides, best practices, troubleshooting |
-| **LiteLLM 1.84.0+** | ✅ Updated | Latest compatibility updates |
-| **Circuit Breaker** | ✅ Merged | Error handling & automatic retry |
-| **Enterprise Ready** | ✅ In Progress | IAM, observability, compliance |
-
-### 🤝 Fork vs Upstream
-
-```
-upstream (sentient-agi/ROMA)
-└─ Research & Development Focus
-   └─ Cutting-edge features
-   └─ Academic papers
-   └─ Community-driven
-
-This Fork (saskw2010/ROMA)
-└─ Production & Enterprise Focus
-   └─ Stable, tested features
-   └─ Comprehensive documentation
-   └─ Contributions back to upstream
-```
-
-**Quick Links:**
-- 🔗 **Upstream:** https://github.com/sentient-agi/ROMA
-- 📍 **This Fork:** https://github.com/saskw2010/ROMA
-- 📋 **Strategy:** [FORK_STRATEGY.md](./FORK_STRATEGY.md)
-- 📝 **Changelog:** [FORK_CHANGELOG.md](./FORK_CHANGELOG.md)
+👉 **[View Project Roadmap →](./projects/security-auditor/README.md)**
 
 ---
+
+</div>
 
 ## 📖 Documentation
 
@@ -98,9 +52,7 @@ This Fork (saskw2010/ROMA)
 
 - **[🗺️ Roadmap](docs/ROADMAP.md)** - See what's coming next for ROMA
 
-- **[🤝 Contributing](CONTRIBUTING.md)** - How to contribute to this fork and upstream
-
-- **[📋 Fork Strategy](FORK_STRATEGY.md)** - Long-term vision and maintenance plan
+- **[🚀 Projects & Roadmap](PROJECTS.md)** - Active development projects and timeline
 
 ## 🎯 What is ROMA?
 
@@ -394,6 +346,7 @@ Seamlessly integrate external tools and protocols with configurable intervention
 - 📝 **[Fork Changelog](./FORK_CHANGELOG.md)** - Version history and feature tracking
 - 🤝 **[Contributing Guide](./CONTRIBUTING.md)** - How to contribute
 - 🔒 **[Security Policy](./.github/SECURITY.md)** - Vulnerability reporting
+- 🚀 **[Projects & Roadmap](./PROJECTS.md)** - Active development projects
 
 ---
 
