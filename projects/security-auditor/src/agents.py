@@ -6,25 +6,37 @@ import os
 import json
 import subprocess
 import asyncio
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from pathlib import Path
 from datetime import datetime
-import logging
 import shutil
 
-from .models import (
-    AuditReport,
-    RepositoryInfo,
-    AuditSummary,
-    Finding,
-    FindingType,
-    SeverityLevel,
-    DependencyVulnerability,
-)
-from .config import config
+try:
+    from .models import (
+        AuditReport,
+        RepositoryInfo,
+        AuditSummary,
+        Finding,
+        FindingType,
+        SeverityLevel,
+        DependencyVulnerability,
+    )
+    from .config import config
+    from .logging import get_logger
+except ImportError:
+    from models import (
+        AuditReport,
+        RepositoryInfo,
+        AuditSummary,
+        Finding,
+        FindingType,
+        SeverityLevel,
+        DependencyVulnerability,
+    )
+    from config import config
+    from logging import get_logger
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class RepositoryScannerAgent:
