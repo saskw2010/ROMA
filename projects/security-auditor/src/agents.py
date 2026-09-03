@@ -8,20 +8,32 @@ import subprocess
 import asyncio
 from typing import Dict, List, Any, Optional
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
 import shutil
 
-from .models import (
-    AuditReport,
-    RepositoryInfo,
-    AuditSummary,
-    Finding,
-    FindingType,
-    SeverityLevel,
-    DependencyVulnerability,
-)
-from .config import config
+try:
+    from .models import (
+        AuditReport,
+        RepositoryInfo,
+        AuditSummary,
+        Finding,
+        FindingType,
+        SeverityLevel,
+        DependencyVulnerability,
+    )
+    from .config import config
+except ImportError:
+    from models import (
+        AuditReport,
+        RepositoryInfo,
+        AuditSummary,
+        Finding,
+        FindingType,
+        SeverityLevel,
+        DependencyVulnerability,
+    )
+    from config import config
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -85,7 +97,7 @@ class RepositoryScannerAgent:
                 "branch": branch,
                 "files_count": len(files),
                 "files": files[:100],
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
         except Exception as e:
             logger.error(f"❌ Repository scan failed: {e}")
@@ -116,7 +128,7 @@ class StaticAnalysisAgent:
                 "status": "success",
                 "findings": findings,
                 "total_findings": len(findings),
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
         except Exception as e:
             logger.error(f"❌ Static analysis failed: {e}")
@@ -197,14 +209,15 @@ class DependencyCheckerAgent:
         vulnerabilities = []
 
         try:
-            vulnerabilities.extend(await self._check_python_deps(repo_path))
+            if config.enable_pip_audit:
+                vulnerabilities.extend(await self._check_python_deps(repo_path))
 
             logger.info(f"✅ Found {len(vulnerabilities)} vulnerabilities")
             return {
                 "status": "success",
                 "vulnerabilities": vulnerabilities,
                 "total_vulnerabilities": len(vulnerabilities),
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
         except Exception as e:
             logger.error(f"❌ Dependency check failed: {e}")
@@ -225,14 +238,19 @@ class DependencyCheckerAgent:
 
                 if result.stdout:
                     audit_results = json.loads(result.stdout)
-                    for vuln in audit_results.get("vulnerabilities", []):
-                        vulns.append({
-                            "package": vuln.get("name"),
-                            "version": vuln.get("version"),
-                            "vulnerability_id": vuln.get("id"),
-                            "description": vuln.get("description"),
-                            "fixed_version": vuln.get("fix_versions", [None])[0],
-                        })
+                    if isinstance(audit_results, dict):
+                        records = audit_results.get("dependencies", [])
+                    else:
+                        records = audit_results
+                    for record in records:
+                        for vuln in record.get("vulns", []) or record.get("vulnerabilities", []):
+                            vulns.append({
+                                "package": record.get("name"),
+                                "version": record.get("version"),
+                                "vulnerability_id": vuln.get("id"),
+                                "description": vuln.get("description"),
+                                "fixed_version": (vuln.get("fix_versions") or [None])[0],
+                            })
                     logger.info(f"📦 Found {len(vulns)} dependency issues")
         except FileNotFoundError:
             logger.warning("⚠️  pip-audit not installed")
@@ -271,7 +289,7 @@ class ReportGeneratorAgent:
                 is_private=False,
                 branch=scan_result.get("branch", "main"),
                 commit_sha=scan_result.get("commit_sha"),
-                clone_timestamp=datetime.utcnow(),
+                clone_timestamp=datetime.now(timezone.utc),
             )
 
             findings = self._process_findings(analysis_result.get("findings", []))
@@ -281,11 +299,17 @@ class ReportGeneratorAgent:
                 scan_result.get("files_count", 0),
             )
 
+            dependency_vulnerabilities = [
+                DependencyVulnerability(**vulnerability)
+                for vulnerability in dependency_result.get("vulnerabilities", [])
+            ]
+
             report = AuditReport(
-                audit_id=f"audit_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}",
+                audit_id=f"audit_{datetime.now(timezone.utc).strftime('%Y%m%d_%H%M%S')}",
                 repository=repo_info,
                 summary=summary,
                 findings=findings,
+                dependency_vulnerabilities=dependency_vulnerabilities,
                 recommendations=self._generate_recommendations(findings, summary),
             )
 
@@ -294,7 +318,7 @@ class ReportGeneratorAgent:
                 "status": "success",
                 "report": report.model_dump(mode="json"),
                 "report_id": report.audit_id,
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(timezone.utc).isoformat(),
             }
         except Exception as e:
             logger.error(f"❌ Report generation failed: {e}")
