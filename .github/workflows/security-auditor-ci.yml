@@ -1,0 +1,33 @@
+name: security-auditor-ci
+
+on:
+  push:
+    paths:
+      - "projects/security-auditor/**"
+      - ".github/workflows/security-auditor-ci.yml"
+  pull_request:
+    paths:
+      - "projects/security-auditor/**"
+      - ".github/workflows/security-auditor-ci.yml"
+
+jobs:
+  test:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: projects/security-auditor
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[dev]
+      - name: Lint
+        run: ruff check --select E,F,I src tests examples security_auditor.py
+      - name: Tests
+        run: pytest --maxfail=1 --disable-warnings --cov=src --cov-report=term-missing tests
