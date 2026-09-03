@@ -1,30 +1,37 @@
-"""
-Multi-agent security auditor implementation
-"""
+"""Multi-agent security auditor implementation."""
 
-import os
-import json
-import subprocess
 import asyncio
-from typing import Dict, List, Any, Optional
-from pathlib import Path
-from datetime import datetime
+import json
 import logging
+import os
 import shutil
+import subprocess
+from datetime import UTC, datetime
+from pathlib import Path
+from typing import Any
 
-from .models import (
-    AuditReport,
-    RepositoryInfo,
-    AuditSummary,
-    Finding,
-    FindingType,
-    SeverityLevel,
-    DependencyVulnerability,
-)
-from .config import config
+try:
+    from .config import config
+    from .models import (
+        AuditReport,
+        AuditSummary,
+        Finding,
+        FindingType,
+        RepositoryInfo,
+        SeverityLevel,
+    )
+except ImportError:  # pragma: no cover - script execution fallback
+    from config import config  # type: ignore
+    from models import (  # type: ignore
+        AuditReport,
+        AuditSummary,
+        Finding,
+        FindingType,
+        RepositoryInfo,
+        SeverityLevel,
+    )
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("security_auditor")
 
 
 class RepositoryScannerAgent:
@@ -34,7 +41,7 @@ class RepositoryScannerAgent:
         self.name = "RepositoryScannerAgent"
         self.temp_dir = config.temp_dir
 
-    async def execute(self, repo_url: str, branch: str = "main") -> Dict[str, Any]:
+    async def execute(self, repo_url: str, branch: str = "main") -> dict[str, Any]:
         """Scan repository and return file manifest"""
         logger.info(f"📍 [SEARCH] Scanning repository: {repo_url}")
 
@@ -47,7 +54,16 @@ class RepositoryScannerAgent:
 
             # Clone with depth to save time
             subprocess.run(
-                ["git", "clone", "--depth", "1", "-b", branch, repo_url, str(clone_path)],
+                [
+                    "git",
+                    "clone",
+                    "--depth",
+                    "1",
+                    "-b",
+                    branch,
+                    repo_url,
+                    str(clone_path),
+                ],
                 check=True,
                 capture_output=True,
                 timeout=60,
@@ -66,15 +82,21 @@ class RepositoryScannerAgent:
             # Scan files
             files = []
             for root, dirs, filenames in os.walk(clone_path):
-                dirs[:] = [d for d in dirs if d not in {".git", "__pycache__", "node_modules", ".venv"}]
+                dirs[:] = [
+                    d
+                    for d in dirs
+                    if d not in {".git", "__pycache__", "node_modules", ".venv"}
+                ]
                 for filename in filenames:
                     filepath = Path(root) / filename
                     rel_path = filepath.relative_to(clone_path)
-                    files.append({
-                        "name": filename,
-                        "path": str(rel_path),
-                        "size": filepath.stat().st_size,
-                    })
+                    files.append(
+                        {
+                            "name": filename,
+                            "path": str(rel_path),
+                            "size": filepath.stat().st_size,
+                        }
+                    )
 
             logger.info(f"✅ Found {len(files)} files")
             return {
@@ -85,7 +107,7 @@ class RepositoryScannerAgent:
                 "branch": branch,
                 "files_count": len(files),
                 "files": files[:100],
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
             }
         except Exception as e:
             logger.error(f"❌ Repository scan failed: {e}")
@@ -98,7 +120,7 @@ class StaticAnalysisAgent:
     def __init__(self):
         self.name = "StaticAnalysisAgent"
 
-    async def execute(self, repo_path: str) -> Dict[str, Any]:
+    async def execute(self, repo_path: str) -> dict[str, Any]:
         """Run static analysis tools"""
         logger.info(f"🔎 [THINK] Running static analysis on: {repo_path}")
 
@@ -116,13 +138,13 @@ class StaticAnalysisAgent:
                 "status": "success",
                 "findings": findings,
                 "total_findings": len(findings),
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
             }
         except Exception as e:
             logger.error(f"❌ Static analysis failed: {e}")
             return {"status": "error", "error": str(e), "findings": []}
 
-    async def _run_bandit(self, repo_path: str) -> List[Dict[str, Any]]:
+    async def _run_bandit(self, repo_path: str) -> list[dict[str, Any]]:
         """Run Bandit security scanner"""
         findings = []
         try:
@@ -136,15 +158,17 @@ class StaticAnalysisAgent:
             if result.stdout:
                 bandit_results = json.loads(result.stdout)
                 for issue in bandit_results.get("results", []):
-                    findings.append({
-                        "type": "bandit",
-                        "severity": issue.get("severity", "LOW").upper(),
-                        "issue_type": issue.get("test_id"),
-                        "message": issue.get("issue_text"),
-                        "file": issue.get("filename"),
-                        "line": issue.get("line_number"),
-                        "code": issue.get("code"),
-                    })
+                    findings.append(
+                        {
+                            "type": "bandit",
+                            "severity": issue.get("severity", "LOW").upper(),
+                            "issue_type": issue.get("test_id"),
+                            "message": issue.get("issue_text"),
+                            "file": issue.get("filename"),
+                            "line": issue.get("line_number"),
+                            "code": issue.get("code"),
+                        }
+                    )
                 logger.info(f"🔍 Bandit found {len(findings)} issues")
         except FileNotFoundError:
             logger.warning("⚠️  Bandit not installed")
@@ -153,7 +177,7 @@ class StaticAnalysisAgent:
 
         return findings
 
-    async def _run_semgrep(self, repo_path: str) -> List[Dict[str, Any]]:
+    async def _run_semgrep(self, repo_path: str) -> list[dict[str, Any]]:
         """Run Semgrep pattern matcher"""
         findings = []
         try:
@@ -167,14 +191,16 @@ class StaticAnalysisAgent:
             if result.stdout:
                 semgrep_results = json.loads(result.stdout)
                 for issue in semgrep_results.get("results", []):
-                    findings.append({
-                        "type": "semgrep",
-                        "severity": issue.get("severity", "LOW").upper(),
-                        "rule_id": issue.get("rule_id"),
-                        "message": issue.get("message"),
-                        "file": issue.get("path"),
-                        "line": issue.get("start", {}).get("line"),
-                    })
+                    findings.append(
+                        {
+                            "type": "semgrep",
+                            "severity": issue.get("severity", "LOW").upper(),
+                            "rule_id": issue.get("rule_id"),
+                            "message": issue.get("message"),
+                            "file": issue.get("path"),
+                            "line": issue.get("start", {}).get("line"),
+                        }
+                    )
                 logger.info(f"🔍 Semgrep found {len(findings)} issues")
         except FileNotFoundError:
             logger.warning("⚠️  Semgrep not installed")
@@ -190,7 +216,7 @@ class DependencyCheckerAgent:
     def __init__(self):
         self.name = "DependencyCheckerAgent"
 
-    async def execute(self, repo_path: str) -> Dict[str, Any]:
+    async def execute(self, repo_path: str) -> dict[str, Any]:
         """Check for vulnerable dependencies"""
         logger.info(f"📦 [SEARCH] Checking dependencies in: {repo_path}")
 
@@ -204,13 +230,13 @@ class DependencyCheckerAgent:
                 "status": "success",
                 "vulnerabilities": vulnerabilities,
                 "total_vulnerabilities": len(vulnerabilities),
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
             }
         except Exception as e:
             logger.error(f"❌ Dependency check failed: {e}")
             return {"status": "error", "error": str(e), "vulnerabilities": []}
 
-    async def _check_python_deps(self, repo_path: str) -> List[Dict[str, Any]]:
+    async def _check_python_deps(self, repo_path: str) -> list[dict[str, Any]]:
         """Check Python dependencies using pip-audit"""
         vulns = []
         try:
@@ -226,13 +252,15 @@ class DependencyCheckerAgent:
                 if result.stdout:
                     audit_results = json.loads(result.stdout)
                     for vuln in audit_results.get("vulnerabilities", []):
-                        vulns.append({
-                            "package": vuln.get("name"),
-                            "version": vuln.get("version"),
-                            "vulnerability_id": vuln.get("id"),
-                            "description": vuln.get("description"),
-                            "fixed_version": vuln.get("fix_versions", [None])[0],
-                        })
+                        vulns.append(
+                            {
+                                "package": vuln.get("name"),
+                                "version": vuln.get("version"),
+                                "vulnerability_id": vuln.get("id"),
+                                "description": vuln.get("description"),
+                                "fixed_version": vuln.get("fix_versions", [None])[0],
+                            }
+                        )
                     logger.info(f"📦 Found {len(vulns)} dependency issues")
         except FileNotFoundError:
             logger.warning("⚠️  pip-audit not installed")
@@ -251,10 +279,10 @@ class ReportGeneratorAgent:
     async def execute(
         self,
         repo_url: str,
-        scan_result: Dict[str, Any],
-        analysis_result: Dict[str, Any],
-        dependency_result: Dict[str, Any],
-    ) -> Dict[str, Any]:
+        scan_result: dict[str, Any],
+        analysis_result: dict[str, Any],
+        dependency_result: dict[str, Any],
+    ) -> dict[str, Any]:
         """Generate comprehensive security report"""
         logger.info(f"📝 [WRITE] Generating report for: {repo_url}")
 
@@ -271,7 +299,7 @@ class ReportGeneratorAgent:
                 is_private=False,
                 branch=scan_result.get("branch", "main"),
                 commit_sha=scan_result.get("commit_sha"),
-                clone_timestamp=datetime.utcnow(),
+                clone_timestamp=datetime.now(UTC),
             )
 
             findings = self._process_findings(analysis_result.get("findings", []))
@@ -282,7 +310,7 @@ class ReportGeneratorAgent:
             )
 
             report = AuditReport(
-                audit_id=f"audit_{datetime.utcnow().strftime('%Y%m%d_%H%M%S')}",
+                audit_id=f"audit_{datetime.now(UTC).strftime('%Y%m%d_%H%M%S')}",
                 repository=repo_info,
                 summary=summary,
                 findings=findings,
@@ -294,13 +322,13 @@ class ReportGeneratorAgent:
                 "status": "success",
                 "report": report.model_dump(mode="json"),
                 "report_id": report.audit_id,
-                "timestamp": datetime.utcnow().isoformat(),
+                "timestamp": datetime.now(UTC).isoformat(),
             }
         except Exception as e:
             logger.error(f"❌ Report generation failed: {e}")
             return {"status": "error", "error": str(e)}
 
-    def _process_findings(self, raw_findings: List[Dict[str, Any]]) -> List[Finding]:
+    def _process_findings(self, raw_findings: list[dict[str, Any]]) -> list[Finding]:
         """Convert raw findings to Finding objects"""
         findings = []
         for i, raw in enumerate(raw_findings):
@@ -335,7 +363,12 @@ class ReportGeneratorAgent:
         }
         return mapping.get(severity.upper(), SeverityLevel.LOW)
 
-    def _calculate_summary(self, findings: List[Finding], vulnerabilities: List[Dict], files_count: int) -> AuditSummary:
+    def _calculate_summary(
+        self,
+        findings: list[Finding],
+        vulnerabilities: list[dict[str, Any]],
+        files_count: int,
+    ) -> AuditSummary:
         """Calculate summary statistics"""
         summary = AuditSummary(files_scanned=files_count)
         for finding in findings:
@@ -355,23 +388,35 @@ class ReportGeneratorAgent:
         summary.risk_score = min(10.0, (summary.critical * 2 + summary.high) / 2)
         return summary
 
-    def _generate_recommendations(self, findings: List[Finding], summary: AuditSummary) -> List[str]:
+    def _generate_recommendations(
+        self,
+        findings: list[Finding],
+        summary: AuditSummary,
+    ) -> list[str]:
         """Generate security recommendations"""
         recommendations = []
 
         if summary.critical > 0:
-            recommendations.append("⚠️  URGENT: Address all critical findings immediately")
+            recommendations.append(
+                "⚠️  URGENT: Address all critical findings immediately"
+            )
         if summary.high > 0:
-            recommendations.append("🔴 High priority: Fix high-severity vulnerabilities within 1 week")
+            recommendations.append(
+                "🔴 High priority: Fix high-severity vulnerabilities within 1 week"
+            )
         if summary.vulnerable_dependencies > 0:
-            recommendations.append(f"📦 Update {summary.vulnerable_dependencies} vulnerable dependencies")
+            recommendations.append(
+                f"📦 Update {summary.vulnerable_dependencies} vulnerable dependencies"
+            )
 
-        recommendations.extend([
-            "✅ Implement security code review process",
-            "✅ Enable automated security scanning in CI/CD",
-            "✅ Add security testing to development workflow",
-            "✅ Regular dependency updates and vulnerability monitoring",
-        ])
+        recommendations.extend(
+            [
+                "✅ Implement security code review process",
+                "✅ Enable automated security scanning in CI/CD",
+                "✅ Add security testing to development workflow",
+                "✅ Regular dependency updates and vulnerability monitoring",
+            ]
+        )
 
         return recommendations
 
@@ -404,13 +449,19 @@ class SecurityAuditorAgent:
             logger.info("📋 Phase 2: Static Analysis (THINK)")
             analysis_result = await self.analyzer.execute(repo_path)
             if analysis_result["status"] != "success":
-                logger.warning(f"Static analysis had issues: {analysis_result.get('error')}")
+                logger.warning(
+                    "Static analysis had issues: %s",
+                    analysis_result.get("error"),
+                )
 
             # Phase 3: Dependency Checking (SEARCH Operation)
             logger.info("📋 Phase 3: Dependency Checking (SEARCH)")
             dependency_result = await self.dependency_checker.execute(repo_path)
             if dependency_result["status"] != "success":
-                logger.warning(f"Dependency check had issues: {dependency_result.get('error')}")
+                logger.warning(
+                    "Dependency check had issues: %s",
+                    dependency_result.get("error"),
+                )
 
             # Phase 4: Report Generation (WRITE Operation)
             logger.info("📋 Phase 4: Report Generation (WRITE)")
@@ -418,7 +469,9 @@ class SecurityAuditorAgent:
                 repo_url, scan_result, analysis_result, dependency_result
             )
             if report_result["status"] != "success":
-                raise Exception(f"Report generation failed: {report_result.get('error')}")
+                raise Exception(
+                    f"Report generation failed: {report_result.get('error')}"
+                )
 
             # Save report
             report_data = report_result["report"]
@@ -427,7 +480,7 @@ class SecurityAuditorAgent:
                 json.dump(report_data, f, indent=2, default=str)
 
             logger.info(f"\n✅ {'='*60}")
-            logger.info(f"✅ AUDIT COMPLETE!")
+            logger.info("✅ AUDIT COMPLETE!")
             logger.info(f"✅ Report saved to: {report_path}")
             logger.info(f"✅ {'='*60}\n")
 
@@ -448,7 +501,10 @@ async def main():
     repo_url = "https://github.com/example/repo"
     try:
         report = await agent.audit(repo_url)
-        print(f"\n📊 Audit Report:\n{json.dumps(report.model_dump(mode='json'), indent=2, default=str)}")
+        print(
+            "\n📊 Audit Report:\n"
+            f"{json.dumps(report.model_dump(mode='json'), indent=2, default=str)}"
+        )
     except Exception as e:
         print(f"Error: {e}")
 
