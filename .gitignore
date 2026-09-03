@@ -57,6 +57,8 @@ env/
 venv/
 .claude-sessions/
 .
+projects/security-auditor/reports/*.json
+projects/security-auditor/tmp/
 
 # PDM
 .pdm.toml
