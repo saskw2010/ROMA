@@ -21,19 +21,18 @@
 | 🤝 **Contributing** | [CONTRIBUTING.md](./CONTRIBUTING.md) |
 | 🔒 **Security Policy** | [.github/SECURITY.md](.github/SECURITY.md) |
 | 📊 **Projects & Roadmap** | [PROJECTS.md](./PROJECTS.md) |
-| 🔐 **Security Auditor Project** | [projects/security-auditor/README.md](./projects/security-auditor/README.md) |
+| 🎬 **غينك Project** | [projects/ghinek/README.md](./projects/ghinek/README.md) |
 
 ---
 
 ## 🎯 **Active Projects**
 
-### 🔒 Security Auditor Agent 
-**Status:** 🚀 In Development  
-**Branch:** `project/security-auditor`  
-**Goal:** Multi-agent system for enterprise security audits  
-**Timeline:** 4 weeks  
+### 🎬 غينك - Entertainment & Media Management Platform
+**Status:** 🚀 Planning & Foundation  
+**Focus:** Content management, recommendations, analytics, and social features  
+**Timeline:** 8 weeks  
 
-👉 **[View Project Roadmap →](./projects/security-auditor/README.md)**
+👉 **[View Project Roadmap →](./projects/ghinek/README.md)**
 
 ---
 
