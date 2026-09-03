@@ -2,26 +2,25 @@
 Multi-agent security auditor implementation
 """
 
-import os
-import json
-import subprocess
 import asyncio
-from typing import Dict, List, Any, Optional
-from pathlib import Path
-from datetime import datetime
+import json
 import logging
+import os
 import shutil
+import subprocess
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List
 
+from .config import config
 from .models import (
     AuditReport,
-    RepositoryInfo,
     AuditSummary,
     Finding,
     FindingType,
+    RepositoryInfo,
     SeverityLevel,
-    DependencyVulnerability,
 )
-from .config import config
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -47,7 +46,16 @@ class RepositoryScannerAgent:
 
             # Clone with depth to save time
             subprocess.run(
-                ["git", "clone", "--depth", "1", "-b", branch, repo_url, str(clone_path)],
+                [
+                    "git",
+                    "clone",
+                    "--depth",
+                    "1",
+                    "-b",
+                    branch,
+                    repo_url,
+                    str(clone_path),
+                ],
                 check=True,
                 capture_output=True,
                 timeout=60,
@@ -66,15 +74,21 @@ class RepositoryScannerAgent:
             # Scan files
             files = []
             for root, dirs, filenames in os.walk(clone_path):
-                dirs[:] = [d for d in dirs if d not in {".git", "__pycache__", "node_modules", ".venv"}]
+                dirs[:] = [
+                    d
+                    for d in dirs
+                    if d not in {".git", "__pycache__", "node_modules", ".venv"}
+                ]
                 for filename in filenames:
                     filepath = Path(root) / filename
                     rel_path = filepath.relative_to(clone_path)
-                    files.append({
-                        "name": filename,
-                        "path": str(rel_path),
-                        "size": filepath.stat().st_size,
-                    })
+                    files.append(
+                        {
+                            "name": filename,
+                            "path": str(rel_path),
+                            "size": filepath.stat().st_size,
+                        }
+                    )
 
             logger.info(f"✅ Found {len(files)} files")
             return {
@@ -136,15 +150,17 @@ class StaticAnalysisAgent:
             if result.stdout:
                 bandit_results = json.loads(result.stdout)
                 for issue in bandit_results.get("results", []):
-                    findings.append({
-                        "type": "bandit",
-                        "severity": issue.get("severity", "LOW").upper(),
-                        "issue_type": issue.get("test_id"),
-                        "message": issue.get("issue_text"),
-                        "file": issue.get("filename"),
-                        "line": issue.get("line_number"),
-                        "code": issue.get("code"),
-                    })
+                    findings.append(
+                        {
+                            "type": "bandit",
+                            "severity": issue.get("severity", "LOW").upper(),
+                            "issue_type": issue.get("test_id"),
+                            "message": issue.get("issue_text"),
+                            "file": issue.get("filename"),
+                            "line": issue.get("line_number"),
+                            "code": issue.get("code"),
+                        }
+                    )
                 logger.info(f"🔍 Bandit found {len(findings)} issues")
         except FileNotFoundError:
             logger.warning("⚠️  Bandit not installed")
@@ -167,14 +183,16 @@ class StaticAnalysisAgent:
             if result.stdout:
                 semgrep_results = json.loads(result.stdout)
                 for issue in semgrep_results.get("results", []):
-                    findings.append({
-                        "type": "semgrep",
-                        "severity": issue.get("severity", "LOW").upper(),
-                        "rule_id": issue.get("rule_id"),
-                        "message": issue.get("message"),
-                        "file": issue.get("path"),
-                        "line": issue.get("start", {}).get("line"),
-                    })
+                    findings.append(
+                        {
+                            "type": "semgrep",
+                            "severity": issue.get("severity", "LOW").upper(),
+                            "rule_id": issue.get("rule_id"),
+                            "message": issue.get("message"),
+                            "file": issue.get("path"),
+                            "line": issue.get("start", {}).get("line"),
+                        }
+                    )
                 logger.info(f"🔍 Semgrep found {len(findings)} issues")
         except FileNotFoundError:
             logger.warning("⚠️  Semgrep not installed")
@@ -226,13 +244,15 @@ class DependencyCheckerAgent:
                 if result.stdout:
                     audit_results = json.loads(result.stdout)
                     for vuln in audit_results.get("vulnerabilities", []):
-                        vulns.append({
-                            "package": vuln.get("name"),
-                            "version": vuln.get("version"),
-                            "vulnerability_id": vuln.get("id"),
-                            "description": vuln.get("description"),
-                            "fixed_version": vuln.get("fix_versions", [None])[0],
-                        })
+                        vulns.append(
+                            {
+                                "package": vuln.get("name"),
+                                "version": vuln.get("version"),
+                                "vulnerability_id": vuln.get("id"),
+                                "description": vuln.get("description"),
+                                "fixed_version": vuln.get("fix_versions", [None])[0],
+                            }
+                        )
                     logger.info(f"📦 Found {len(vulns)} dependency issues")
         except FileNotFoundError:
             logger.warning("⚠️  pip-audit not installed")
@@ -335,7 +355,9 @@ class ReportGeneratorAgent:
         }
         return mapping.get(severity.upper(), SeverityLevel.LOW)
 
-    def _calculate_summary(self, findings: List[Finding], vulnerabilities: List[Dict], files_count: int) -> AuditSummary:
+    def _calculate_summary(
+        self, findings: List[Finding], vulnerabilities: List[Dict], files_count: int
+    ) -> AuditSummary:
         """Calculate summary statistics"""
         summary = AuditSummary(files_scanned=files_count)
         for finding in findings:
@@ -355,23 +377,33 @@ class ReportGeneratorAgent:
         summary.risk_score = min(10.0, (summary.critical * 2 + summary.high) / 2)
         return summary
 
-    def _generate_recommendations(self, findings: List[Finding], summary: AuditSummary) -> List[str]:
+    def _generate_recommendations(
+        self, findings: List[Finding], summary: AuditSummary
+    ) -> List[str]:
         """Generate security recommendations"""
         recommendations = []
 
         if summary.critical > 0:
-            recommendations.append("⚠️  URGENT: Address all critical findings immediately")
+            recommendations.append(
+                "⚠️  URGENT: Address all critical findings immediately"
+            )
         if summary.high > 0:
-            recommendations.append("🔴 High priority: Fix high-severity vulnerabilities within 1 week")
+            recommendations.append(
+                "🔴 High priority: Fix high-severity vulnerabilities within 1 week"
+            )
         if summary.vulnerable_dependencies > 0:
-            recommendations.append(f"📦 Update {summary.vulnerable_dependencies} vulnerable dependencies")
+            recommendations.append(
+                f"📦 Update {summary.vulnerable_dependencies} vulnerable dependencies"
+            )
 
-        recommendations.extend([
-            "✅ Implement security code review process",
-            "✅ Enable automated security scanning in CI/CD",
-            "✅ Add security testing to development workflow",
-            "✅ Regular dependency updates and vulnerability monitoring",
-        ])
+        recommendations.extend(
+            [
+                "✅ Implement security code review process",
+                "✅ Enable automated security scanning in CI/CD",
+                "✅ Add security testing to development workflow",
+                "✅ Regular dependency updates and vulnerability monitoring",
+            ]
+        )
 
         return recommendations
 
@@ -404,13 +436,17 @@ class SecurityAuditorAgent:
             logger.info("📋 Phase 2: Static Analysis (THINK)")
             analysis_result = await self.analyzer.execute(repo_path)
             if analysis_result["status"] != "success":
-                logger.warning(f"Static analysis had issues: {analysis_result.get('error')}")
+                logger.warning(
+                    f"Static analysis had issues: {analysis_result.get('error')}"
+                )
 
             # Phase 3: Dependency Checking (SEARCH Operation)
             logger.info("📋 Phase 3: Dependency Checking (SEARCH)")
             dependency_result = await self.dependency_checker.execute(repo_path)
             if dependency_result["status"] != "success":
-                logger.warning(f"Dependency check had issues: {dependency_result.get('error')}")
+                logger.warning(
+                    f"Dependency check had issues: {dependency_result.get('error')}"
+                )
 
             # Phase 4: Report Generation (WRITE Operation)
             logger.info("📋 Phase 4: Report Generation (WRITE)")
@@ -418,7 +454,9 @@ class SecurityAuditorAgent:
                 repo_url, scan_result, analysis_result, dependency_result
             )
             if report_result["status"] != "success":
-                raise Exception(f"Report generation failed: {report_result.get('error')}")
+                raise Exception(
+                    f"Report generation failed: {report_result.get('error')}"
+                )
 
             # Save report
             report_data = report_result["report"]
@@ -427,7 +465,7 @@ class SecurityAuditorAgent:
                 json.dump(report_data, f, indent=2, default=str)
 
             logger.info(f"\n✅ {'='*60}")
-            logger.info(f"✅ AUDIT COMPLETE!")
+            logger.info("✅ AUDIT COMPLETE!")
             logger.info(f"✅ Report saved to: {report_path}")
             logger.info(f"✅ {'='*60}\n")
 
@@ -443,12 +481,13 @@ class SecurityAuditorAgent:
 async def main():
     """Main entry point for testing"""
     agent = SecurityAuditorAgent()
-    
+
     # Example: Audit a repository
     repo_url = "https://github.com/example/repo"
     try:
         report = await agent.audit(repo_url)
-        print(f"\n📊 Audit Report:\n{json.dumps(report.model_dump(mode='json'), indent=2, default=str)}")
+        report_json = json.dumps(report.model_dump(mode="json"), indent=2, default=str)
+        print(f"\n📊 Audit Report:\n{report_json}")
     except Exception as e:
         print(f"Error: {e}")
 

@@ -46,6 +46,10 @@ data_quality_analysis.md
 output.txt
 current_run.log
 research_agent.log
+projects/security-auditor/reports/
+projects/security-auditor/logs/
+projects/security-auditor/.cache/
+projects/security-auditor/__pycache__/
 
 # Jupyter checkpoints
 .ipynb_checkpoints
